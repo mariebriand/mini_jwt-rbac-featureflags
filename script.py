@@ -1,4 +1,3 @@
-# script.py
 import time
 
 print("Container is running...")
