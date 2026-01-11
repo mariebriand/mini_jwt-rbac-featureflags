@@ -1,0 +1,2 @@
+- uvicorn : lightweight, fast ASGI server for Python, commonly used to run asynchronous web applications, particularly with frameworks like FastAPI or Starlette
+- fastapi /docs : serves a Swagger UI web page
