@@ -15,7 +15,8 @@
 - `Field(...)` is both:
 	- a Pydantic validator (checks types at runtime)
 	- a SQLAlchemy column definition (sets PK, default, index)
-- Bcrypt cannot process passwords longer than 72 bytes → using HA-256 to pre-hash pw (always 32 bytes)
+- Bcrypt cannot process passwords longer than 72 bytes → using HA-256 to pre-hash password (always 32 bytes)
 - Unit Test (pytest): 
 	- Isolation: each test uses an in-memory DB
 	- Dependency override endpoints use test session
+- `.hexdigest()` instead of `.digest()` that returns raw bytes, including NULL bytes that bcrypt does not allow in password input
