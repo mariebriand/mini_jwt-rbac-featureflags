@@ -1,7 +1,20 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlmodel import Session, text
+
+from app.db.session import get_session
 
 router = APIRouter(tags=["health"])
 
 @router.get("/health")
-async def health():
-    return {"message": "OK"}
+def health(session: Session = Depends(get_session)):
+	try:
+		session.exec(text("SELECT 1"))
+		return {
+			"status": "OK",
+			"database": "OK",
+		}
+	except Exception:
+		return {
+			"status": "degraded",
+			"database": "error",
+		}
