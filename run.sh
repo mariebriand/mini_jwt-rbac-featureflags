@@ -10,7 +10,7 @@ docker build -t mini_jwt-rbac-featureflags .
 # - Mount the current folder (so DB + code changes persist)
 # - Mount a dedicated ./data folder for DB & input files
 docker run -d --name mini_jwt-rbac-featureflags \
-    -p 8000:8000 \
-    -v "$(pwd)":/app \
-    -v "$(pwd)/data":/data \
-    mini_jwt-rbac-featureflags
+	-p 8000:8000 \
+	-v "$(pwd)":/app \
+	-v "$(pwd)/data":/data \
+	mini_jwt-rbac-featureflags
