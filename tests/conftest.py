@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 from app.main import app
 from app.db.models.user import User
 
-TEST_DATABASE_URL = "sqlite:///.test.db"
+TEST_DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(
 	TEST_DATABASE_URL,
 	echo=True, # Will log all SQL commands executed by SQLAlchemy to the console
