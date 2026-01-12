@@ -15,4 +15,4 @@
 - `Field(...)` is both:
 	- a Pydantic validator (checks types at runtime)
 	- a SQLAlchemy column definition (sets PK, default, index)
-
+- Bcrypt cannot process passwords longer than 72 bytes → using HA-256 to pre-hash pw (always 32 bytes)

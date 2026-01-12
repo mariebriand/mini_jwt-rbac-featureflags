@@ -19,7 +19,5 @@ async def hello():
 
 app.include_router(health_router)
 
-init_db()
-
 # Include routers
 app.include_router(user_router)
