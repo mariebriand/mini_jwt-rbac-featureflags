@@ -24,15 +24,4 @@ jobs:
         docker run --rm \
           -e PYTHONPATH=/app \
           fastapi-app:test \
-          pytest -v --tb=short tests/
-```
-
-### 4. **Update your `.gitignore`** (if not already there)
-
-Add these lines:
-```
-__pycache__/
-*.py[cod]
-.pytest_cache/
-test.db
-*.db
+          pytest -v --tb=short --color=yes tests/
