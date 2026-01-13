@@ -1,4 +1,4 @@
-from app.db.models.user import User
+from app.db.models import User
 from app.core.security import hash_password
 
 
