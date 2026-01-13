@@ -1,5 +1,5 @@
 - uvicorn: lightweight, fast ASGI server for Python, commonly used to run asynchronous web applications, particularly with frameworks like FastAPI or Starlette
-- fastapi route `/docs` : serves a Swagger UI web page
+- FastApi route `/docs` : serves a Swagger UI web page
 - pydantic: library for data validation and settings management using type annotations, ensuring that the data is conform to the types and rules defined
 - sqlite: lightweight relational database
 - sqlalchemy: ORM
@@ -20,3 +20,10 @@
 	- Isolation: each test uses an in-memory DB
 	- Dependency override endpoints use test session
 - `.hexdigest()` instead of `.digest()` that returns raw bytes, including NULL bytes that bcrypt does not allow in password input
+- dependencies in FastAPI : logic that is not an endpoint but is required by an endpoint
+- remember : a new db session is a new handle to the db connection (not a new db)
+- with in-memory SQLite:
+	- engine (SQLAlchemy object that manages the connections to the db) per test -> for test isolation, each test should create its own engine so tests do not share data
+	- single connection reused: brand new db per connection
+	- all sessions bound to that connection
+	- endpoints depend on get_session() so it must be override otherwise FastAPI will create a new session which might grab a different connection 
