@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
 from app.db.session import get_session
-from app.db.models.user import User
+from app.db.models import User
 from app.schemas.user import UserCreate, UserRead
 from app.core.security import hash_password
 

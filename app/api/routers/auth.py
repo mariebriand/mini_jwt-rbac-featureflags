@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
-from app.db.models.user import User
+from app.db.models import User
 from app.db.session import get_session
 from app.core.security import verify_password
 from app.core.jwt import create_access_token
