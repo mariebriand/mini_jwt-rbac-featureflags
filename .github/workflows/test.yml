@@ -1,0 +1,27 @@
+name: Run Tests
+
+on:
+  pull_request:
+    branches:
+      - develop
+  push:
+    branches:
+      - develop
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Build Docker image
+      run: docker build -t fastapi-app:test .
+    
+    - name: Run tests in container
+      run: |
+        docker run --rm \
+          -e PYTHONPATH=/app \
+          fastapi-app:test \
+          pytest -v --tb=short --color=yes tests/
