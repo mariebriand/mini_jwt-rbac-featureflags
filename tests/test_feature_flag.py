@@ -1,5 +1,6 @@
 from app.db.models import FeatureFlag
 
+
 def test_create_feature_flag(client):
     flag_data = {"key": "alpha", "enabled": True}
     response = client.post("/feature_flag/", json=flag_data)
