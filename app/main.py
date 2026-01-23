@@ -10,13 +10,15 @@ from app.api.routers.auth import router as auth_router
 init_db()
 
 app = FastAPI(
-	title=settings.app_name,
-	version=settings.app_version,
+    title=settings.app_name,
+    version=settings.app_version,
 )
+
 
 @app.get("/")
 async def hello():
-	return {"message": settings}
+    return {"message": settings}
+
 
 app.include_router(health_router)
 

@@ -10,3 +10,4 @@ httpx
 PyJWT
 python-multipart
 pytest-asyncio
+black
