@@ -1,6 +1,7 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional
 
+
 class FeatureFlag(SQLModel, table=True):
     __tablename__ = "feature_flag"
 
