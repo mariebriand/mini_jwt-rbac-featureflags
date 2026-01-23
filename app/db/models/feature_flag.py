@@ -1,5 +1,7 @@
 from sqlmodel import SQLModel, Field
-from typing import Optional
+from typing import Optional, List
+
+from app.db.models.role import Role
 
 
 class FeatureFlag(SQLModel, table=True):
