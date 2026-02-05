@@ -11,7 +11,7 @@ def test_login(client, session):
     session.refresh(user)
 
     response = client.post(
-        "/login",
+        "/auth/login",
         data={"username": user_data["email"], "password": user_data["password"]},
     )
 
@@ -30,14 +30,14 @@ def test_can_access_user(client, session):
     session.refresh(user)
 
     response_login = client.post(
-        "/login",
+        "/auth/login",
         data={"username": user_data["email"], "password": user_data["password"]},
     )
 
     token = response_login.json()["access_token"]
 
     response_access = client.get(
-        "/users-only", headers={"Authorization": f"Bearer {token}"}
+        "/auth/users-only", headers={"Authorization": f"Bearer {token}"}
     )
 
     assert response_access.status_code == 200
