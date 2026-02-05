@@ -8,12 +8,15 @@ from app.api.routers.user import router as user_router
 from app.api.routers.auth import router as auth_router
 from app.api.routers.feature_flag import router as flag_router
 
-init_db()
-
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
 )
+
+
+@app.on_event("startup")
+def on_startup() -> None:
+    init_db()
 
 
 @app.get("/")
