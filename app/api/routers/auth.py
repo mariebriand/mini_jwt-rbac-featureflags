@@ -7,7 +7,7 @@ from app.core.security import verify_password
 from app.core.jwt import create_access_token
 from app.core.dependencies import require_roles
 
-router = APIRouter(tags=["auth"])
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/login")
