@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import Session, select
+from sqlmodel import Session, select, delete
 
 from app.db.session import get_session
 from app.db.models import User
@@ -39,3 +39,16 @@ def read_user(user_id: int, session: Session = Depends(get_session)):
         )
 
     return existing_user
+
+
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user(user_id: int, session: Session = Depends(get_session)):
+    # Check if id exists
+    existing_user = session.exec(select(User).where(User.id == user_id)).first()
+    if not existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User does not exist"
+        )
+
+    session.exec(delete(User).where(User.id == user_id))
+    session.commit()
