@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select, delete
 
@@ -27,6 +29,12 @@ def create_user(user_in: UserCreate, session: Session = Depends(get_session)):
     session.commit()
     session.refresh(db_user)
     return db_user
+
+
+@router.get("/all", response_model=List[UserRead], status_code=status.HTTP_200_OK)
+def read_user(session: Session = Depends(get_session)):
+    all_users = session.exec(select(User)).all()
+    return all_users
 
 
 @router.get("/{user_id}", response_model=UserRead, status_code=status.HTTP_200_OK)
