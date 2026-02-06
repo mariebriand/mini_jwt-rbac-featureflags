@@ -3,7 +3,7 @@ from app.core.security import hash_password
 
 
 def test_login(client, session):
-    """Login success with incorrect password"""
+    """Login success"""
 
     user_data = {"email": "alice@example.com", "password": "secret123"}
     hashed_pw = hash_password(user_data["password"])
