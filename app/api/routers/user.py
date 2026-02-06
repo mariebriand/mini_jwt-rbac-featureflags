@@ -32,7 +32,7 @@ def create_user(user_in: UserCreate, session: Session = Depends(get_session)):
 
 
 @router.get("/all", response_model=List[UserRead], status_code=status.HTTP_200_OK)
-def read_user(session: Session = Depends(get_session)):
+def read_all_users(session: Session = Depends(get_session)):
     all_users = session.exec(select(User)).all()
     return all_users
 
@@ -40,7 +40,7 @@ def read_user(session: Session = Depends(get_session)):
 @router.get("/{user_id}", response_model=UserRead, status_code=status.HTTP_200_OK)
 def read_user(user_id: int, session: Session = Depends(get_session)):
     # Check if id exists
-    existing_user = session.exec(select(User).where(User.id == user_id)).first()
+    existing_user = session.get(User, user_id)
     if not existing_user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User does not exist"
@@ -52,11 +52,11 @@ def read_user(user_id: int, session: Session = Depends(get_session)):
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_user(user_id: int, session: Session = Depends(get_session)):
     # Check if id exists
-    existing_user = session.exec(select(User).where(User.id == user_id)).first()
+    existing_user = session.get(User, user_id)
     if not existing_user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User does not exist"
         )
 
-    session.exec(delete(User).where(User.id == user_id))
+    session.delete(existing_user)
     session.commit()
