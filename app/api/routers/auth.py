@@ -26,12 +26,12 @@ def login(
 
 
 @router.get("/superadmins-only")
-def admin_endpoint(user: User = Depends(require_roles(["superadmin"]))):
+def superadmin_endpoint(user: User = Depends(require_roles(["superadmin"]))):
     return {"message": f"Hello {user.email}, you are an superadmin!"}
 
 
 @router.get("/admins-only")
-def user_endpoint(user: User = Depends(require_roles(["superadmin", "admin"]))):
+def admin_endpoint(user: User = Depends(require_roles(["superadmin", "admin"]))):
     return {"message": f"Hello {user.email}, you are a superadmin/admin!"}
 
 

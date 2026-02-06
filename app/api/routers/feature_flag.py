@@ -13,7 +13,6 @@ router = APIRouter(prefix="/feature_flag", tags=["feature_flag"])
 
 @router.post("/", response_model=FlagRead, status_code=status.HTTP_201_CREATED)
 def create_flag(flag_in: FlagCreate, session: Session = Depends(get_session)):
-    # Check if key exists
     existing_flag = session.exec(select(Flag).where(Flag.key == flag_in.key)).first()
     if existing_flag:
         raise HTTPException(
@@ -28,7 +27,7 @@ def create_flag(flag_in: FlagCreate, session: Session = Depends(get_session)):
 
 
 @router.get("/{key}", response_model=FlagRead, status_code=status.HTTP_200_OK)
-def read_key(key: str, session: Session = Depends(get_session)):
+def read_flag(key: str, session: Session = Depends(get_session)):
     existing_flag = session.exec(select(Flag).where(Flag.key == key)).first()
     if not existing_flag:
         raise HTTPException(
