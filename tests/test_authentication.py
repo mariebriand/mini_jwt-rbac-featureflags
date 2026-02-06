@@ -2,12 +2,11 @@ from app.db.models import User
 from app.core.security import hash_password
 
 
-def test_login(client, session):
-    """Login success"""
-
+def test_login_success(client, session):
     user_data = {"email": "alice@example.com", "password": "secret123"}
     hashed_pw = hash_password(user_data["password"])
     user = User(email=user_data["email"], hashed_password=hashed_pw)
+
     session.add(user)
     session.commit()
     session.refresh(user)
@@ -23,12 +22,11 @@ def test_login(client, session):
     assert json_data["token_type"] == "bearer"
 
 
-def test_login_with_invalid_password(client, session):
-    """Login fail with incorrect password"""
-
+def test_login_fail_invalid_password(client, session):
     user_data = {"email": "alice@example.com", "password": "secret123"}
     hashed_pw = hash_password(user_data["password"])
     user = User(email=user_data["email"], hashed_password=hashed_pw)
+
     session.add(user)
     session.commit()
 
@@ -41,9 +39,24 @@ def test_login_with_invalid_password(client, session):
     assert "access_token" not in response.json()
 
 
-def test_login_with_nonexistent_user(client, session):
-    """Login fail with non-existent email"""
+def test_login_fail_inactive_user(client, session):
+    user_data = {"email": "alice@example.com", "password": "secret123"}
+    hashed_pw = hash_password(user_data["password"])
+    user = User(email=user_data["email"], hashed_password=hashed_pw, is_active=False)
 
+    session.add(user)
+    session.commit()
+
+    response = client.post(
+        "/authn/login",
+        data={"username": user_data["email"], "password": "secret123"},
+    )
+
+    assert response.status_code == 403
+    assert "access_token" not in response.json()
+
+
+def test_login_fail_nonexistent_user(client, session):
     response = client.post(
         "/authn/login",
         data={"username": "nonexistent@example.com", "password": "password123"},
@@ -52,9 +65,7 @@ def test_login_with_nonexistent_user(client, session):
     assert response.status_code == 401
 
 
-def test_login_with_missing_credentials(client, session):
-    """Login fail with missing email or password"""
-
+def test_login_fail_missing_credentials(client, session):
     # Missing password
     response = client.post(
         "/authn/login",
@@ -70,12 +81,13 @@ def test_login_with_missing_credentials(client, session):
     assert response.status_code == 422
 
 
-def test_empty_password(client, session):
+def test_login_fail_empty_password(client, session):
     """Login fail with empty email or password"""
 
     user_data = {"email": "alice@example.com", "password": "secret123"}
     hashed_pw = hash_password(user_data["password"])
     user = User(email=user_data["email"], hashed_password=hashed_pw)
+
     session.add(user)
     session.commit()
 
@@ -95,11 +107,10 @@ def test_empty_password(client, session):
 
 
 def test_sql_injection_attempt(client, session):
-    """SQL injection attempts in login are handled safely"""
-
     user_data = {"email": "alice@example.com", "password": "secret123"}
     hashed_pw = hash_password(user_data["password"])
     user = User(email=user_data["email"], hashed_password=hashed_pw)
+
     session.add(user)
     session.commit()
 
