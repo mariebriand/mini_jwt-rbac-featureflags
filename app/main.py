@@ -25,8 +25,8 @@ async def hello():
         "app_name": settings.app_name,
         "app_version": settings.app_version,
         "status": "OK",
-        "message": "Hello World!"
-        }
+        "message": "Hello World!",
+    }
 
 
 app.include_router(health_router)
