@@ -15,12 +15,12 @@ def get_current_user(
     """Extract the user from the JWT"""
     try:
         payload = decode_access_token(token)
-        email = payload.get("sub")
-        if email is None:
+        user_id = payload.get("sub")
+        if user_id is None:
             raise HTTPException(status_code=401, detail="Invalid token")
     except Exception:
         raise HTTPException(status_code=401, detail="Invalid token")
-    user = session.exec(select(User).where(User.email == email)).first()
+    user = session.get(User, user_id)
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
     return user
