@@ -29,5 +29,5 @@ def login(
             status_code=status.HTTP_403_FORBIDDEN, detail="Account is not active"
         )
 
-    token = create_access_token({"sub": user.email, "role": user.role.value})
+    token = create_access_token({"sub": str(user.id), "role": user.role.value})
     return {"access_token": token, "token_type": "bearer"}
