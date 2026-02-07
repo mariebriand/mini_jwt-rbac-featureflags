@@ -1,4 +1,6 @@
 from pydantic import BaseModel, EmailStr, field_validator
+import re
+
 from app.db.models.role import Role
 
 
@@ -9,8 +11,34 @@ class UserCreate(BaseModel):
     @field_validator("password")
     @classmethod
     def validate_password(cls, value: str) -> str:
-        if not value or len(value.strip()) == 0:
+        stripped_value = value.strip()
+
+        if not value or len(stripped_value) == 0:
             raise ValueError("Password cannot be empty")
+
+        # Passphrases are encouraged by modern security guidelines (NIST, etc.),
+        # so we allow spaces in the middle of the password, but not leading or trailing whitespace.
+        if value != stripped_value:
+            raise ValueError("Password cannot start/end with a whitespace")
+
+        if len(value) < 8:
+            raise ValueError("Password must be at least 8 characters long")
+
+        if len(value) > 128:
+            raise ValueError("Password must not exceed 128 characters")
+
+        if not re.search(r"[A-Z]", value):
+            raise ValueError("Password must contain at least one uppercase letter")
+
+        if not re.search(r"[a-z]", value):
+            raise ValueError("Password must contain at least one lowercase letter")
+
+        if not re.search(r"\d", value):
+            raise ValueError("Password must contain at least one number")
+
+        if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", value):
+            raise ValueError("Password must contain at least one special character")
+
         return value
 
 

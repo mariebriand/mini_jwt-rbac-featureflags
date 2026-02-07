@@ -28,3 +28,4 @@
 	- all sessions bound to that connection
 	- endpoints depend on get_session() so it must be override otherwise FastAPI will create a new session which might grab a different connection 
 - route order matters: always put specific paths before path parameters
+- in Pydantic v2, @field_validator functions are designed to be class-level validation functions, not instance methods
