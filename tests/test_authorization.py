@@ -3,7 +3,7 @@ from app.core.security import hash_password
 
 
 def test_can_access_user(client, session):
-    user_data = {"email": "alice@example.com", "password": "secret123"}
+    user_data = {"email": "alice@example.com", "password": "Secret123!"}
     hashed_pw = hash_password(user_data["password"])
     user = User(email=user_data["email"], hashed_password=hashed_pw)
     session.add(user)

@@ -3,7 +3,7 @@ from app.core.security import hash_password
 
 
 def test_login_success(client, session):
-    user_data = {"email": "alice@example.com", "password": "secret123"}
+    user_data = {"email": "alice@example.com", "password": "Secret123!"}
     hashed_pw = hash_password(user_data["password"])
     user = User(email=user_data["email"], hashed_password=hashed_pw)
 
@@ -23,7 +23,7 @@ def test_login_success(client, session):
 
 
 def test_login_fail_invalid_password(client, session):
-    user_data = {"email": "alice@example.com", "password": "secret123"}
+    user_data = {"email": "alice@example.com", "password": "Secret123!"}
     hashed_pw = hash_password(user_data["password"])
     user = User(email=user_data["email"], hashed_password=hashed_pw)
 
@@ -40,7 +40,7 @@ def test_login_fail_invalid_password(client, session):
 
 
 def test_login_fail_inactive_user(client, session):
-    user_data = {"email": "alice@example.com", "password": "secret123"}
+    user_data = {"email": "alice@example.com", "password": "Secret123!"}
     hashed_pw = hash_password(user_data["password"])
     user = User(email=user_data["email"], hashed_password=hashed_pw, is_active=False)
 
@@ -49,7 +49,7 @@ def test_login_fail_inactive_user(client, session):
 
     response = client.post(
         "/authn/login",
-        data={"username": user_data["email"], "password": "secret123"},
+        data={"username": user_data["email"], "password": "Secret123!"},
     )
 
     assert response.status_code == 403
@@ -76,7 +76,7 @@ def test_login_fail_missing_credentials(client, session):
     # Missing email
     response = client.post(
         "/authn/login",
-        data={"password": "secret123"},
+        data={"password": "Secret123!"},
     )
     assert response.status_code == 422
 
@@ -84,7 +84,7 @@ def test_login_fail_missing_credentials(client, session):
 def test_login_fail_empty_password(client, session):
     """Login fail with empty email or password"""
 
-    user_data = {"email": "alice@example.com", "password": "secret123"}
+    user_data = {"email": "alice@example.com", "password": "Secret123!"}
     hashed_pw = hash_password(user_data["password"])
     user = User(email=user_data["email"], hashed_password=hashed_pw)
 
@@ -101,13 +101,13 @@ def test_login_fail_empty_password(client, session):
     # Empty email
     response = client.post(
         "/authn/login",
-        data={"username": "", "password": "secret123"},
+        data={"username": "", "password": "Secret123!"},
     )
     assert response.status_code == 422
 
 
 def test_sql_injection_attempt(client, session):
-    user_data = {"email": "alice@example.com", "password": "secret123"}
+    user_data = {"email": "alice@example.com", "password": "Secret123!"}
     hashed_pw = hash_password(user_data["password"])
     user = User(email=user_data["email"], hashed_password=hashed_pw)
 
@@ -118,7 +118,7 @@ def test_sql_injection_attempt(client, session):
         "/authn/login",
         data={
             "username": "alice@example.com' OR '1'='1",  # Malicious input
-            "password": "anything",
+            "password": "Secret123!",
         },
     )
 

@@ -2,7 +2,7 @@ from app.core.security import hash_password, verify_password
 
 
 def test_hash_and_verify():
-    password = "SuperSecret123"
+    password = "Secret123!"
     hashed = hash_password(password)
 
     assert hashed != password
