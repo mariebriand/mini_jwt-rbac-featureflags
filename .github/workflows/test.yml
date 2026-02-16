@@ -42,4 +42,4 @@ jobs:
         docker run --rm \
           -e PYTHONPATH=/app \
           fastapi-app:test \
-          pytest -v --tb=short --color=yes tests/
+          pytest -v --tb=short --color=yes app/tests/
