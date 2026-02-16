@@ -16,3 +16,12 @@ docker run -d --name mini_jwt-rbac-featureflags \
 	-v "$(pwd)/data":/data \
 	-v "$(pwd)/tests":/app/tests \
 	mini_jwt-rbac-featureflags
+
+echo ""
+echo "✅ Development server starting..."
+echo "📦 Container: mini_jwt-rbac-featureflags"
+echo "🌐 URL: http://localhost:8000"
+echo "📘 URL: http://localhost:8000/docs"
+echo ""
+echo "View logs: docker logs -f mini_jwt-rbac-featureflags"
+echo "Stop: docker stop mini_jwt-rbac-featureflags"
