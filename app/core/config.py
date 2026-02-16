@@ -1,4 +1,4 @@
-""" 
+"""
 Single source of truth for static runtime configuration:
 - Infrastructure/environment
 - Security/auth
@@ -17,11 +17,12 @@ from typing import Literal
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 class Settings(BaseSettings):
     # ---------------- App ---------------------
     app_name: str = "Mini Auth Service"
     app_version: str = "0.1.0"
-    
+
     env: Literal["dev", "prod"] = "dev"
     debug: bool = False
 
@@ -44,9 +45,11 @@ class Settings(BaseSettings):
     def is_production(self) -> bool:
         return self.environment == "prod"
 
+
 # Must be a singleton
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
+
 
 settings = get_settings()

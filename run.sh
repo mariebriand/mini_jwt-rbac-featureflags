@@ -14,4 +14,5 @@ docker run -d --name mini_jwt-rbac-featureflags \
 	-p 8000:8000 \
 	-v "$(pwd)/app":/app/app \
 	-v "$(pwd)/data":/data \
+	-v "$(pwd)/tests":/app/tests \
 	mini_jwt-rbac-featureflags
