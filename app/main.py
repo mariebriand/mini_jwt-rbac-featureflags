@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.config.settings import settings
+from app.core.config import settings
 from app.db.init_db import init_db
 
 from app.api.routers.health import router as health_router
@@ -17,7 +17,8 @@ app = FastAPI(
 
 @app.on_event("startup")
 def on_startup() -> None:
-    init_db()
+    if not settings.testing:
+        init_db()
 
 
 @app.get("/")
