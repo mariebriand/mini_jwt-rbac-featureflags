@@ -14,12 +14,12 @@ class UserCreate(BaseModel):
         stripped_value = value.strip()
 
         if not value or len(stripped_value) == 0:
-            raise ValueError("Password cannot be empty")
+            raise ValueError("Password must not be empty")
 
         # Passphrases are encouraged by modern security guidelines (NIST, etc.),
         # so we allow spaces in the middle of the password, but not leading or trailing whitespace.
         if value != stripped_value:
-            raise ValueError("Password cannot start/end with a whitespace")
+            raise ValueError("Password must not start/end with a whitespace")
 
         if len(value) < 8:
             raise ValueError("Password must be at least 8 characters long")

@@ -75,11 +75,11 @@ def test_create_user_fail_missing_password(client):
 @pytest.mark.parametrize(
     "user_id, password, expected_error",
     [
-        (0, "", "Password cannot be empty"),
-        (1, "   ", "Password cannot be empty"),
-        (2, " Secret123!", "Password cannot start/end with a whitespace"),
-        (3, "Secret123! ", "Password cannot start/end with a whitespace"),
-        (4, " Secret123! ", "Password cannot start/end with a whitespace"),
+        (0, "", "Password must not be empty"),
+        (1, "   ", "Password must not be empty"),
+        (2, " Secret123!", "Password must not start/end with a whitespace"),
+        (3, "Secret123! ", "Password must not start/end with a whitespace"),
+        (4, " Secret123! ", "Password must not start/end with a whitespace"),
         (5, "Scrt1!", "Password must be at least 8 characters long"),
         (6, "Secret!" + "x" * 125, "Password must not exceed 128 characters"),
         (7, "secret123!", "Password must contain at least one uppercase letter"),
