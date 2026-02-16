@@ -17,7 +17,8 @@ app = FastAPI(
 
 @app.on_event("startup")
 def on_startup() -> None:
-    init_db()
+    if not settings.testing:
+        init_db()
 
 
 @app.get("/")

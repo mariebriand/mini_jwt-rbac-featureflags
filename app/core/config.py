@@ -25,6 +25,7 @@ class Settings(BaseSettings):
 
     env: Literal["dev", "prod"] = "dev"
     debug: bool = False
+    testing: bool = False
 
     # ---------------- Database ----------------
     database_url: str = "sqlite:////data/dev.db"
