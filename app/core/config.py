@@ -12,9 +12,9 @@ Order of priority:
 """
 
 from functools import lru_cache
-from typing import Literal
+from typing import List, Literal
 
-from pydantic import SecretStr
+from pydantic import SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -35,17 +35,26 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 10
     bcrypt_rounds: int = 12
+    
+    cors_allowed_origins: List[str] = [""]  # dev default
+   
 
+    @model_validator(mode="after") # runs after all other validation and parsing is done
+    def check_prod_cors(self) -> "Settings":
+        if self.env == "prod" and self.cors_allowed_origins == [""]:
+            raise ValueError("cors_allowed_origins must be explicitly set in production")
+        return self
+    
+    @property
+    def is_production(self) -> bool:
+        return self.env == "prod"
+    
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
         extra="ignore",
         case_sensitive=False,
     )
-
-    @property
-    def is_production(self) -> bool:
-        return self.environment == "prod"
 
 
 # Must be a singleton
