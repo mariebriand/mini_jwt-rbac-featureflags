@@ -1,6 +1,7 @@
 from fastapi import Depends, HTTPException
 from sqlmodel import Session, select
 from fastapi.security import OAuth2PasswordBearer
+from typing import Callable
 
 from app.db.session import get_session
 from app.db.models import User
@@ -26,7 +27,7 @@ def get_current_user(
     return user
 
 
-def require_roles(required_roles: list[str]) -> User:
+def require_roles(required_roles: list[str]) -> Callable[..., User]:
     def dependency(user: User = Depends(get_current_user)):
         if not any(role in user.role for role in required_roles):
             raise HTTPException(status_code=403, detail="Forbidden")

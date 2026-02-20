@@ -45,7 +45,7 @@ class Settings(BaseSettings):
 
     @property
     def is_production(self) -> bool:
-        return self.environment == "prod"
+        return self.env == "prod"
 
 
 # Must be a singleton
