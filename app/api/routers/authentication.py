@@ -1,17 +1,21 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, status, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
 
 from app.core.jwt import create_access_token
+from app.core.limiter import limiter
 from app.core.security import verify_password
 from app.db.models import User
 from app.db.session import get_session
+
 
 router = APIRouter(prefix="/authn", tags=["authn"])
 
 
 @router.post("/login")
+@limiter.limit("5/minute")
 def login(
+    request: Request, 
     form_data: OAuth2PasswordRequestForm = Depends(),
     session: Session = Depends(get_session),
 ):

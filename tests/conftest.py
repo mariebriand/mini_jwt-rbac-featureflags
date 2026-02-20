@@ -34,8 +34,14 @@ def session(engine):
 def client(session):
     # Override dependency
     app.dependency_overrides[get_session] = lambda: session
-
+    
     with TestClient(app) as client:
         yield client
 
     app.dependency_overrides.clear()
+
+@pytest.fixture(autouse=True) # automatically used in all tests without needing to explictly include it as a parameter
+def reset_limits():
+    from app.core.limiter import limiter
+    limiter.reset()  # clears all counters
+    yield

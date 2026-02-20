@@ -13,3 +13,4 @@ pytest-asyncio
 black
 mypy
 types-passlib
+slowapi
