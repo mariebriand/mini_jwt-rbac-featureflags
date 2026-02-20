@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, field_validator, model_validator
 import re
 
 from app.db.models.role import Role
@@ -7,6 +7,11 @@ from app.db.models.role import Role
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
+
+    @field_validator("email")
+    @classmethod
+    def normalize_email(cls, v: str) -> str:
+        return v.strip().lower()
 
     @field_validator("password")
     @classmethod
@@ -53,3 +58,14 @@ class UserUpdate(BaseModel):
     email: EmailStr | None = None
     is_active: bool | None = None
     role: Role | None = None
+
+    @field_validator("email")
+    @classmethod
+    def normalize_email(cls, v: str) -> str:
+        return v.strip().lower()
+
+    @model_validator(mode="after")
+    def check_not_empty(self) -> "UserUpdate":
+        if all(v is None for v in [self.email, self.is_active, self.role]):
+            raise ValueError("At least one field must be provided")
+        return self

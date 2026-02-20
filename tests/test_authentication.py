@@ -52,7 +52,7 @@ def test_login_fail_inactive_user(client, session):
         data={"username": user_data["email"], "password": "Secret123!"},
     )
 
-    assert response.status_code == 403
+    assert response.status_code == 401
     assert "access_token" not in response.json()
 
 

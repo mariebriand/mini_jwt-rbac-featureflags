@@ -1,4 +1,5 @@
 from sqlmodel import SQLModel, Field
+from sqlalchemy import event
 from typing import Optional
 
 from app.db.models.role import Role
@@ -12,3 +13,10 @@ class User(SQLModel, table=True):
     hashed_password: str
     is_active: bool = True
     role: Role = Field(default=Role.USER)
+
+
+@event.listens_for(User, "before_insert")
+@event.listens_for(User, "before_update")
+def normalize_user(mapper, connection, target):
+    if target.email:
+        target.email = target.email.strip().lower()

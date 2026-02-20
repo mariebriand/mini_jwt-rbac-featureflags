@@ -155,7 +155,7 @@ def test_read_user_fail_invalid_id(client):
 def test_read_user_fail_negative_id(client):
     response = client.get("/user/-1")
 
-    assert response.status_code == 404
+    assert response.status_code == 422
 
 
 # ============================================================================
@@ -263,8 +263,7 @@ def test_update_user_fail_empty_payload(client, test_user):
         json={},
     )
 
-    assert response.status_code == 200
-    assert response.json()["email"] == test_user["email"]
+    assert response.status_code == 422
 
 
 def test_update_user_fail_invalid_email(client, test_user):

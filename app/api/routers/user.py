@@ -1,7 +1,7 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlmodel import Session, select, delete
+from fastapi import APIRouter, Depends, HTTPException, status, Path
+from sqlmodel import Session, select
 
 from app.db.session import get_session
 from app.db.models import User
@@ -38,7 +38,7 @@ def read_all_users(session: Session = Depends(get_session)):
 
 
 @router.get("/{user_id}", response_model=UserRead, status_code=status.HTTP_200_OK)
-def read_user(user_id: int, session: Session = Depends(get_session)):
+def read_user(user_id: int = Path(gt=0), session: Session = Depends(get_session)):
     # Check if id exists
     existing_user = session.get(User, user_id)
     if not existing_user:
@@ -50,7 +50,7 @@ def read_user(user_id: int, session: Session = Depends(get_session)):
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_user(user_id: int, session: Session = Depends(get_session)):
+def delete_user(user_id: int = Path(gt=0), session: Session = Depends(get_session)):
     # Check if id exists
     existing_user = session.get(User, user_id)
     if not existing_user:
@@ -66,7 +66,9 @@ def delete_user(user_id: int, session: Session = Depends(get_session)):
     "/update/{user_id}", response_model=UserRead, status_code=status.HTTP_200_OK
 )
 def update_user(
-    user_id: int, user_in: UserUpdate, session: Session = Depends(get_session)
+    user_in: UserUpdate,
+    user_id: int = Path(gt=0),
+    session: Session = Depends(get_session),
 ):
     # Check if id exists
     existing_user = session.get(User, user_id)
@@ -80,14 +82,13 @@ def update_user(
     # Handle email uniqueness if email is being updated
     if "email" in update_data and update_data["email"] != existing_user.email:
         email_exists = session.exec(
-            select(User).where(User.email == update_data["email"].lower())
+            select(User).where(User.email == update_data["email"])
         ).first()
         if email_exists:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Email already registered",
             )
-        update_data["email"] = update_data["email"].lower()
 
     # Apply rest of updates
     for key, value in update_data.items():

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Path
 from sqlmodel import Session, select
 
 from app.db.session import get_session
@@ -27,8 +27,13 @@ def create_flag(flag_in: FlagCreate, session: Session = Depends(get_session)):
 
 
 @router.get("/{key}", response_model=FlagRead, status_code=status.HTTP_200_OK)
-def read_flag(key: str, session: Session = Depends(get_session)):
-    existing_flag = session.exec(select(Flag).where(Flag.key == key)).first()
+def read_flag(
+    key: str = Path(min_length=1, max_length=100),
+    session: Session = Depends(get_session),
+):
+    existing_flag = session.exec(
+        select(Flag).where(Flag.key == key.strip().lower())
+    ).first()
     if not existing_flag:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Key does not exist"
