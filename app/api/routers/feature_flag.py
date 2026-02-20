@@ -14,7 +14,9 @@ router = APIRouter(prefix="/feature_flag", tags=["feature_flag"])
 
 @router.post("/", response_model=FlagRead, status_code=status.HTTP_201_CREATED)
 @limiter.limit("30/minute")
-def create_flag(request: Request, flag_in: FlagCreate, session: Session = Depends(get_session)):
+def create_flag(
+    request: Request, flag_in: FlagCreate, session: Session = Depends(get_session)
+):
     existing_flag = session.exec(select(Flag).where(Flag.key == flag_in.key)).first()
     if existing_flag:
         raise HTTPException(

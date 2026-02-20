@@ -17,6 +17,7 @@ app = FastAPI(
 
 setup_limiter(app)
 
+
 @app.on_event("startup")
 def on_startup() -> None:
     if not settings.testing:

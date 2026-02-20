@@ -14,7 +14,9 @@ router = APIRouter(prefix="/user", tags=["user"])
 
 @router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED)
 @limiter.limit("5/minute")
-def create_user(request: Request, user_in: UserCreate, session: Session = Depends(get_session)):
+def create_user(
+    request: Request, user_in: UserCreate, session: Session = Depends(get_session)
+):
     # Check if email exists
     existing_user = session.exec(
         select(User).where(User.email == user_in.email)
@@ -55,7 +57,9 @@ def read_user(request: Request, user_id: int, session: Session = Depends(get_ses
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 @limiter.limit("30/minute")
-def delete_user(request: Request, user_id: int, session: Session = Depends(get_session)):
+def delete_user(
+    request: Request, user_id: int, session: Session = Depends(get_session)
+):
     # Check if id exists
     existing_user = session.get(User, user_id)
     if not existing_user:
@@ -72,7 +76,10 @@ def delete_user(request: Request, user_id: int, session: Session = Depends(get_s
 )
 @limiter.limit("30/minute")
 def update_user(
-    request: Request, user_id: int, user_in: UserUpdate, session: Session = Depends(get_session)
+    request: Request,
+    user_id: int,
+    user_in: UserUpdate,
+    session: Session = Depends(get_session),
 ):
     # Check if id exists
     existing_user = session.get(User, user_id)

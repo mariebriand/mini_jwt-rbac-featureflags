@@ -15,7 +15,7 @@ router = APIRouter(prefix="/authn", tags=["authn"])
 @router.post("/login")
 @limiter.limit("5/minute")
 def login(
-    request: Request, 
+    request: Request,
     form_data: OAuth2PasswordRequestForm = Depends(),
     session: Session = Depends(get_session),
 ):

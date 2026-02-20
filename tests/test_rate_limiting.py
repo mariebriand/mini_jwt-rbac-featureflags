@@ -6,6 +6,7 @@ from app.core.security import hash_password
 from app.db.models.role import Role
 from sqlmodel import select
 
+
 @pytest.fixture
 def test_user(client):
     response = client.post(
@@ -14,11 +15,14 @@ def test_user(client):
     )
     return response.json()
 
+
 @pytest.fixture
 def auth_token(client, session):
-    user_data = {"email": "alice@example.com", "password": "Secret123!"}
+    user_data = {"email": "test_superadmin@example.com", "password": "Secret123!"}
     hashed_pw = hash_password(user_data["password"])
-    user = User(email=user_data["email"], hashed_password=hashed_pw, role=Role.SUPERADMIN)
+    user = User(
+        email=user_data["email"], hashed_password=hashed_pw, role=Role.SUPERADMIN
+    )
     session.add(user)
     session.commit()
     session.refresh(user)
@@ -29,6 +33,7 @@ def auth_token(client, session):
     )
     return response.json()["access_token"]
 
+
 @pytest.fixture
 def test_flag(client):
     response = client.post(
@@ -37,13 +42,14 @@ def test_flag(client):
     )
     return response.json()
 
-def test_authn_rate_limit(client, test_user):
-    # Ensure the test user exists
-    assert test_user["email"] == "test_user@example.com"
 
+def test_authn_rate_limit(client, test_user):
     for i in range(6):  # limit is 5/minute
-        response = client.post("/authn/login", data={"username": "test_user@example.com", "password": "Secret123!"})
-    
+        response = client.post(
+            "/authn/login",
+            data={"username": "test_user@example.com", "password": "Secret123!"},
+        )
+
     assert response.status_code == 429
 
 
@@ -76,6 +82,7 @@ def test_authz_superadmins_only_rate_limit(client, auth_token):
 
     assert response.status_code == 429
 
+
 def test_create_flag_rate_limit(client):
     for i in range(31):
         response = client.post(
@@ -90,10 +97,12 @@ def test_read_flag_rate_limit(client, test_flag):
         response = client.get(f"/feature_flag/{test_flag['key']}")
     assert response.status_code == 429
 
+
 def test_health_rate_limit(client):
     for i in range(61):
         response = client.get("/health")
     assert response.status_code == 429
+
 
 def test_create_user_rate_limit(client):
     for i in range(6):
@@ -114,7 +123,8 @@ def test_read_user_rate_limit(client, test_user):
     for i in range(61):
         response = client.get(f"/user/{test_user['id']}")
     assert response.status_code == 429
-    
+
+
 def test_delete_user_rate_limit(client, auth_token):
     response = client.post(
         "/user/",
@@ -130,6 +140,7 @@ def test_delete_user_rate_limit(client, auth_token):
 
     assert response.status_code == 429
 
+
 def test_update_user_rate_limit(client, auth_token):
     response = client.post(
         "/user/",
@@ -143,9 +154,13 @@ def test_update_user_rate_limit(client, auth_token):
             headers={"Authorization": f"Bearer {auth_token}"},
         )
         if i < 30:
-            assert response.status_code in (204, 404) # allow for the user to be deleted/or not found in an earlier iteration
+            assert response.status_code in (
+                204,
+                404,
+            )  # allow for the user to be deleted/or not found in an earlier iteration
 
     assert response.status_code == 429
+
 
 def test_update_user_rate_limit(client, test_user, auth_token):
     for i in range(31):

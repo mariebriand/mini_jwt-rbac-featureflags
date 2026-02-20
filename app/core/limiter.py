@@ -14,11 +14,11 @@ def get_rate_limit_key(request: Request) -> str:
     ip_addr = get_remote_address(request)
     return ip_addr
 
+
 limiter = Limiter(
-    key_func=get_rate_limit_key,
-    swallow_errors=False,
-    enabled=not settings.testing
+    key_func=get_rate_limit_key, swallow_errors=False, enabled=not settings.testing
 )
+
 
 def setup_limiter(app: FastAPI) -> None:
     app.state.limiter = limiter
