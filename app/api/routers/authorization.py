@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
-from app.db.models import User
 from app.core.dependencies import require_roles
+from app.db.models import User
 
 router = APIRouter(prefix="/authz", tags=["authz"])
 

@@ -1,5 +1,6 @@
-from sqlmodel import SQLModel, Field
 from typing import Optional, List
+
+from sqlmodel import SQLModel, Field
 
 from app.db.models.role import Role
 

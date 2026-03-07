@@ -1,5 +1,5 @@
-from app.db.models import User
 from app.core.security import hash_password
+from app.db.models import User
 
 
 def test_login_success(client, session):
