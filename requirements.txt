@@ -11,3 +11,5 @@ PyJWT
 python-multipart
 pytest-asyncio
 black
+mypy
+types-passlib
