@@ -2,7 +2,6 @@ import pytest
 
 from app.db.models import User
 from app.core.security import hash_password
-
 from app.db.models.role import Role
 
 
@@ -43,7 +42,7 @@ def test_flag(client):
 
 
 def test_authn_rate_limit(client, test_user):
-    for _ in range(6):# limit is 5/minute
+    for _ in range(6):  # limit is 5/minute
         response = client.post(
             "/authn/login",
             data={"username": "test_user@example.com", "password": "Secret123!"},

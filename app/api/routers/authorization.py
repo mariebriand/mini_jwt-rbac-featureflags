@@ -1,7 +1,7 @@
-from app.core.limiter import limiter
 from fastapi import APIRouter, Depends, Request
 
 from app.core.dependencies import require_roles
+from app.core.limiter import limiter
 from app.db.models import User
 
 router = APIRouter(prefix="/authz", tags=["authz"])

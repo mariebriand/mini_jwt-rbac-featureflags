@@ -1,5 +1,6 @@
-from pydantic import BaseModel, EmailStr, field_validator, ConfigDict
 import re
+
+from pydantic import BaseModel, EmailStr, field_validator, ConfigDict
 
 from app.db.models.role import Role
 
