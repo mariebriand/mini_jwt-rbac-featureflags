@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select
 
-from app.db.session import get_session
 from app.db.models import FeatureFlag as Flag
+from app.db.session import get_session
 from app.schemas.feature_flag import (
     FeatureFlagCreate as FlagCreate,
     FeatureFlagRead as FlagRead,
