@@ -1,6 +1,8 @@
+from typing import Callable
+
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
-from typing import Callable
+from sqlmodel import Session
 
 from app.core.jwt import decode_access_token
 from app.db.models import User
