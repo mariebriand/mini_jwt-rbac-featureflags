@@ -8,7 +8,6 @@ from app.core.security import verify_password
 from app.db.models import User
 from app.db.session import get_session
 
-
 router = APIRouter(prefix="/authn", tags=["authn"])
 
 
