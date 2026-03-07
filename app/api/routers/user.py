@@ -3,10 +3,10 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session, select, delete
 
-from app.db.session import get_session
-from app.db.models import User
-from app.schemas.user import UserCreate, UserRead, UserUpdate
 from app.core.security import hash_password
+from app.db.models import User
+from app.db.session import get_session
+from app.schemas.user import UserCreate, UserRead, UserUpdate
 
 router = APIRouter(prefix="/user", tags=["user"])
 
