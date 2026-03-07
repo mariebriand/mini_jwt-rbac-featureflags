@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlmodel import Session, select
 
+from app.core.limiter import limiter
 from app.db.models import FeatureFlag as Flag
 from app.db.session import get_session
 from app.schemas.feature_flag import (
@@ -12,7 +13,10 @@ router = APIRouter(prefix="/feature_flag", tags=["feature_flag"])
 
 
 @router.post("/", response_model=FlagRead, status_code=status.HTTP_201_CREATED)
-def create_flag(flag_in: FlagCreate, session: Session = Depends(get_session)):
+@limiter.limit("30/minute")
+def create_flag(
+    request: Request, flag_in: FlagCreate, session: Session = Depends(get_session)
+):
     existing_flag = session.exec(select(Flag).where(Flag.key == flag_in.key)).first()
     if existing_flag:
         raise HTTPException(
@@ -27,7 +31,8 @@ def create_flag(flag_in: FlagCreate, session: Session = Depends(get_session)):
 
 
 @router.get("/{key}", response_model=FlagRead, status_code=status.HTTP_200_OK)
-def read_flag(key: str, session: Session = Depends(get_session)):
+@limiter.limit("60/minute")
+def read_flag(request: Request, key: str, session: Session = Depends(get_session)):
     existing_flag = session.exec(select(Flag).where(Flag.key == key)).first()
     if not existing_flag:
         raise HTTPException(

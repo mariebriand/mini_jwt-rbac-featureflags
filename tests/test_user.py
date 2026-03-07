@@ -1,7 +1,5 @@
 import pytest
 
-from fastapi.testclient import TestClient
-
 
 @pytest.fixture
 def test_user(client):
@@ -300,7 +298,7 @@ def test_delete_user_fail_not_found(client):
     assert response.json()["detail"] == "User does not exist"
 
 
-def test_delete_user_fail_twice(client: TestClient, test_user):
+def test_delete_user_fail_twice(client, test_user):
     user_id = test_user["id"]
 
     response1 = client.delete(f"/user/{user_id}")
@@ -310,7 +308,7 @@ def test_delete_user_fail_twice(client: TestClient, test_user):
     assert response2.status_code == 404
 
 
-def test_delete_user_fail_invalid_id(client: TestClient):
+def test_delete_user_fail_invalid_id(client):
     response = client.delete("/user/invalid")
 
     assert response.status_code == 422

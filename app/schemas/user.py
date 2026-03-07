@@ -1,6 +1,6 @@
 import re
 
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, field_validator, ConfigDict
 
 from app.db.models.role import Role
 
@@ -8,6 +8,12 @@ from app.db.models.role import Role
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {"email": "user@example.com", "password": "Secret123!"}
+        }
+    )
 
     @field_validator("password")
     @classmethod

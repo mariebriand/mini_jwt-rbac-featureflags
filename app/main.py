@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.core.config import settings
+from app.core.limiter import setup_limiter
 from app.db.init_db import init_db
 
 from app.api.routers.health import router as health_router
@@ -13,6 +14,8 @@ app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
 )
+
+setup_limiter(app)
 
 
 @app.on_event("startup")

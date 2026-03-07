@@ -1,8 +1,9 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlmodel import Session, select, delete
 
+from app.core.limiter import limiter
 from app.core.security import hash_password
 from app.db.models import User
 from app.db.session import get_session
@@ -12,7 +13,10 @@ router = APIRouter(prefix="/user", tags=["user"])
 
 
 @router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED)
-def create_user(user_in: UserCreate, session: Session = Depends(get_session)):
+@limiter.limit("5/minute")
+def create_user(
+    request: Request, user_in: UserCreate, session: Session = Depends(get_session)
+):
     # Check if email exists
     existing_user = session.exec(
         select(User).where(User.email == user_in.email)
@@ -32,13 +36,15 @@ def create_user(user_in: UserCreate, session: Session = Depends(get_session)):
 
 
 @router.get("/all", response_model=List[UserRead], status_code=status.HTTP_200_OK)
-def read_all_users(session: Session = Depends(get_session)):
+@limiter.limit("60/minute")
+def read_all_users(request: Request, session: Session = Depends(get_session)):
     all_users = session.exec(select(User)).all()
     return all_users
 
 
 @router.get("/{user_id}", response_model=UserRead, status_code=status.HTTP_200_OK)
-def read_user(user_id: int, session: Session = Depends(get_session)):
+@limiter.limit("60/minute")
+def read_user(request: Request, user_id: int, session: Session = Depends(get_session)):
     # Check if id exists
     existing_user = session.get(User, user_id)
     if not existing_user:
@@ -50,7 +56,10 @@ def read_user(user_id: int, session: Session = Depends(get_session)):
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_user(user_id: int, session: Session = Depends(get_session)):
+@limiter.limit("30/minute")
+def delete_user(
+    request: Request, user_id: int, session: Session = Depends(get_session)
+):
     # Check if id exists
     existing_user = session.get(User, user_id)
     if not existing_user:
@@ -65,8 +74,12 @@ def delete_user(user_id: int, session: Session = Depends(get_session)):
 @router.patch(
     "/update/{user_id}", response_model=UserRead, status_code=status.HTTP_200_OK
 )
+@limiter.limit("30/minute")
 def update_user(
-    user_id: int, user_in: UserUpdate, session: Session = Depends(get_session)
+    request: Request,
+    user_id: int,
+    user_in: UserUpdate,
+    session: Session = Depends(get_session),
 ):
     # Check if id exists
     existing_user = session.get(User, user_id)

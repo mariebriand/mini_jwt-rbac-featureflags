@@ -2,6 +2,7 @@ import pytest
 
 from sqlmodel import SQLModel, create_engine, Session
 from fastapi.testclient import TestClient
+
 from app.main import app
 from app.db.models import User
 from app.db.session import get_session
@@ -39,3 +40,13 @@ def client(session):
         yield client
 
     app.dependency_overrides.clear()
+
+
+@pytest.fixture(
+    autouse=True
+)  # automatically used in all tests without needing to explictly include it as a parameter
+def reset_limits():
+    from app.core.limiter import limiter
+
+    limiter.reset()  # clears all counters
+    yield
